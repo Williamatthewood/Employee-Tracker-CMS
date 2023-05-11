@@ -22,6 +22,7 @@ const db = mysql.createConnection(
 
 //routes and queries here
 
+//get all departments
 app.get('/api/departments', (req, res) => {
     const sql = `SELECT * FROM departments`;
     
