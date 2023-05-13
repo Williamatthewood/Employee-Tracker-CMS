@@ -80,6 +80,7 @@ INNER JOIN departments ON roles.department_id = departments.id`;
 });
 
 // add a new department 
+app.post('/api/new-department')
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
