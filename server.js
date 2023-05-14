@@ -81,7 +81,22 @@ INNER JOIN departments ON roles.department_id = departments.id`;
 });
 
 // add a new department 
-app.post('/api/new-department')
+app.post('/api/new-department', ( { body }, res) => {
+  const sql = `INSERT INTO departments(name)
+  VALUES (?)`;
+  const params = body.newDepartment;
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: body
+    });
+  });
+});
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {

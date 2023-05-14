@@ -18,7 +18,7 @@ INNER JOIN departments ON roles.department_id = departments.id
 
 -- add a new department
 INSERT INTO departments(name)
-VALUES ('?')
+VALUES (?)
 
 -- add a new role - NEED TO PROVIDE USER A LIST OF DEPARTMENT CHOICES AND JUST TAKE ID NUMBER
 INSERT INTO roles(title, salary, department_id)

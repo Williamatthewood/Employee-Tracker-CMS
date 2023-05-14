@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
-const baseUrl = 'http://localhost:3001'
+const cTable = require('console.table');
+const baseUrl = 'http://localhost:3001';
 const ui = new inquirer.ui.BottomBar();
 
 const mainMenu = [
@@ -61,6 +62,7 @@ function startMenu() {
             switch(menuChoice) {
                 case mainMenu[1]:
                     console.log(`Your choice was ${mainMenu[1]}`);
+                    displayEmployees();
                     break;
                 case mainMenu[2]:
                     console.log(`Your choice was ${mainMenu[2]}`);
@@ -70,6 +72,7 @@ function startMenu() {
                     break;
                 case mainMenu[4]:
                     console.log(`Your choice was ${mainMenu[4]}`);
+                    displayRoles();
                     break;
                 case mainMenu[5]:
                     console.log(`Your choice was ${mainMenu[5]}`);
@@ -93,8 +96,39 @@ const displayDepartments = async () => {
         method: 'GET',
     });
     const json = await result.json();
-    // use console.table package here
+    console.table(json.data);
+    startMenu();
     return json;
 
+}
+
+const displayRoles = async () => {
+    const result = await fetch(baseUrl +'/api/roles', {
+        method: 'GET',
+    });
+    const json = await result.json();
+    console.table(json.data);
+    startMenu();
+    return json;
+}
+
+const displayEmployees = async () => {
+    const result = await fetch(baseUrl +'/api/employees', {
+        method: 'GET',
+    });
+    const json = await result.json();
+    console.table(json.data);
+    startMenu();
+    return json;
+}
+
+const addDepartment = async (newDepartment) => {
+    const result = await fetch(baseUrl + '/api/new-department', {
+        method: 'POST',
+        body: JSON.stringify(newDepartment)
+    });
+    const json = await result.json();
+    console.log('Department added to the database', json)
+    return json;
 }
 module.exports = { startMenu };
