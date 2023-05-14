@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-
+const baseUrl = 'http://localhost:3001'
 const ui = new inquirer.ui.BottomBar();
 
 const mainMenu = [
@@ -49,7 +49,9 @@ function startMenu() {
                     mainMenu[5],
                     mainMenu[6],
                     mainMenu[7],
+                    new inquirer.Separator(),
                     mainMenu[8],
+                    new inquirer.Separator(),
                 ]
             }
         ])
@@ -74,6 +76,7 @@ function startMenu() {
                     break;
                 case mainMenu[6]:
                     console.log(`Your choice was ${mainMenu[6]}`);
+                    displayDepartments();
                     break;
                 case mainMenu[7]:
                     console.log(`Your choice was ${mainMenu[7]}`);
@@ -83,5 +86,15 @@ function startMenu() {
                     break;
             }
         })
+}
+
+const displayDepartments = async () => {
+    const result = await fetch(baseUrl +'/api/departments', {
+        method: 'GET',
+    });
+    const json = await result.json();
+    console.log(json);
+    return json;
+
 }
 module.exports = { startMenu };
