@@ -93,7 +93,7 @@ const displayDepartments = async () => {
         method: 'GET',
     });
     const json = await result.json();
-    console.log(json);
+    // use console.table package here
     return json;
 
 }
