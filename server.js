@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const mysql = require('mysql2');
+const questions = require('./scripts/questions');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -90,3 +91,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+questions.startMenu();
