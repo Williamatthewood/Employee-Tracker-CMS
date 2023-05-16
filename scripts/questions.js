@@ -66,10 +66,11 @@ function startMenu() {
                     break;
                 case mainMenu[2]:
                     console.log(`Your choice was ${mainMenu[2]}`);
-                    getDepartmentList();
+                    newEmployeePrompt();
                     break;
                 case mainMenu[3]:
                     console.log(`Your choice was ${mainMenu[3]}`);
+                    updateEmployeePrompt();
                     break;
                 case mainMenu[4]:
                     console.log(`Your choice was ${mainMenu[4]}`);
@@ -201,10 +202,28 @@ async function addEmployee(answers) {
         body: newEmployee
     });
     const json = await result.json();
-    console.log('Role added to the database', json);
+    console.log('Employee added to the database', json);
     startMenu();
     return json;
 }
+
+//UPDATE AN EMPLOYEE
+async function updateEmployee(answers){
+    const update = JSON.stringify(answers);
+    console.log("answers.id = " + answers.id);
+    const result = await fetch(baseUrl + `/api/employees/${answers.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-type':'application/json'
+        },
+        body: update
+    });
+    const json = await result.json();
+    console.log('Employee updated in the database', json);
+    startMenu();
+    return json;
+}
+
 //NEW DEPARTMENT QUESTIONS
 function newDepartmentPrompt (){
     inquirer
@@ -282,6 +301,31 @@ async function newEmployeePrompt (){
         .then ((answers) => {
             console.log(answers);
             addEmployee(answers);
+        })
+}
+
+//UPDATE EMPLOYEE QUESTIONS
+async function updateEmployeePrompt (){
+    const roleList = await getRoleList();
+    const employeeList = await getEmployeeList();
+    inquirer
+        .prompt([
+            {
+                type:'list',
+                name:'id',
+                message: employeeQuestions[4],
+                choices: employeeList,
+            },
+            {
+                type:'list',
+                name:'role_id',
+                message: employeeQuestions[5],
+                choices: roleList,
+            },
+        ])
+        .then ((answers) => {
+            console.log(answers);
+            updateEmployee(answers);
         })
 }
 

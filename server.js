@@ -179,6 +179,26 @@ app.post('/api/new-employee', (req, res) => {
   });
 });
 
+// update an employee
+app.put('/api/employees/:id', (req, res) => {
+  const sql = `UPDATE employees
+  SET role_id = ?
+  WHERE id = ?`;
+  const { id, role_id } = req.body;
+  const params = [role_id, id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'succes',
+      data: req.body
+    });
+  })
+})
+
 // Default response for any other request (Not Found)
 app.use((req, res) => {
   res.status(404).end();
