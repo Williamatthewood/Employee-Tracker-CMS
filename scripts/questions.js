@@ -61,35 +61,28 @@ function startMenu() {
 
             switch(menuChoice) {
                 case mainMenu[1]:
-                    console.log(`Your choice was ${mainMenu[1]}`);
                     displayEmployees();
                     break;
                 case mainMenu[2]:
-                    console.log(`Your choice was ${mainMenu[2]}`);
                     newEmployeePrompt();
                     break;
                 case mainMenu[3]:
-                    console.log(`Your choice was ${mainMenu[3]}`);
                     updateEmployeePrompt();
                     break;
                 case mainMenu[4]:
-                    console.log(`Your choice was ${mainMenu[4]}`);
                     displayRoles();
                     break;
                 case mainMenu[5]:
-                    console.log(`Your choice was ${mainMenu[5]}`);
                     newRolePrompt();
                     break;
                 case mainMenu[6]:
-                    console.log(`Your choice was ${mainMenu[6]}`);
                     displayDepartments();
                     break;
                 case mainMenu[7]:
-                    console.log(`Your choice was ${mainMenu[7]}`);
                     newDepartmentPrompt();
                     break;
                 case mainMenu[8]:
-                    console.log(`Your choice was ${mainMenu[8]}`);
+                    console.log(`Bye!`);
                     break;
             }
         })
@@ -210,7 +203,6 @@ async function addEmployee(answers) {
 //UPDATE AN EMPLOYEE
 async function updateEmployee(answers){
     const update = JSON.stringify(answers);
-    console.log("answers.id = " + answers.id);
     const result = await fetch(baseUrl + `/api/employees/${answers.id}`, {
         method: 'PUT',
         headers: {
