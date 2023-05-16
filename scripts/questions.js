@@ -94,6 +94,7 @@ function startMenu() {
         })
 }
 
+//GET ALL DEPARTMENTS
 const displayDepartments = async () => {
     const result = await fetch(baseUrl +'/api/departments', {
         method: 'GET',
@@ -110,14 +111,12 @@ const getDepartmentList = async () => {
     const departmentData = await fetch(baseUrl + '/api/departments-list', {
         method: 'GET',
     });
-    console.log("1 " + JSON.stringify(departmentData));
     const json = await departmentData.json();
-    console.log("2 " + JSON.stringify(json));
     const departmentList = await json.data;
-    console.log("3 " + JSON.stringify(departmentList));
     return departmentList;
 }
 
+//GET ALL ROLES
 const displayRoles = async () => {
     const result = await fetch(baseUrl +'/api/roles', {
         method: 'GET',
@@ -128,6 +127,7 @@ const displayRoles = async () => {
     return json;
 }
 
+//GET ALL ROLES
 const displayEmployees = async () => {
     const result = await fetch(baseUrl +'/api/employees', {
         method: 'GET',
@@ -138,6 +138,7 @@ const displayEmployees = async () => {
     return json;
 }
 
+//NEW DEPARTMENT QUESTIONS
 function newDepartmentPrompt (){
     inquirer
         .prompt ([
@@ -154,8 +155,8 @@ function newDepartmentPrompt (){
             
         })
 }
+//ADD THE NEW DEPARTMENT
 const addDepartment = async (answer) => {
-    console.log("From addDepartment Function " + JSON.stringify(answer));
     const newDepartment = JSON.stringify(answer);
     const result = await fetch(baseUrl + '/api/new-department', {
         method: 'POST',
@@ -165,11 +166,27 @@ const addDepartment = async (answer) => {
         body: newDepartment
     });
     const json = await result.json();
-    console.log('Department added to the database', json)
+    console.log('Department added to the database', json);
     startMenu();
     return json;
 }
 
+//ADD A NEW ROLE
+async function addRole (answers) {
+    const newRole = JSON.stringify(answers);
+    const result = await fetch(baseUrl + '/api/new-role', {
+        method: 'POST',
+        headers: {
+            'Content-type':'application/json'
+        },
+        body: newRole
+    });
+    const json = await result.json();
+    console.log('Role added to the database', json);
+    startMenu();
+    return json;
+}
+//prompt 
 async function newRolePrompt(){
     const departmentList = await getDepartmentList();
     inquirer
@@ -186,13 +203,15 @@ async function newRolePrompt(){
             },
             {
                 type:'list',
-                name:'department',
+                name:'department_id',
                 message: roleQuestions[2],
                 choices: departmentList,
             }
         ])
-        .then ((answer) => {
-            console.log(answer)
+        .then ((answers) => {
+            addRole(answers);
         })
 }
+
+
 module.exports = { startMenu };
