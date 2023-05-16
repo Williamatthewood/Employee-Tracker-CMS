@@ -66,6 +66,7 @@ function startMenu() {
                     break;
                 case mainMenu[2]:
                     console.log(`Your choice was ${mainMenu[2]}`);
+                    getDepartmentList();
                     break;
                 case mainMenu[3]:
                     console.log(`Your choice was ${mainMenu[3]}`);
@@ -76,6 +77,7 @@ function startMenu() {
                     break;
                 case mainMenu[5]:
                     console.log(`Your choice was ${mainMenu[5]}`);
+                    newRolePrompt();
                     break;
                 case mainMenu[6]:
                     console.log(`Your choice was ${mainMenu[6]}`);
@@ -83,6 +85,7 @@ function startMenu() {
                     break;
                 case mainMenu[7]:
                     console.log(`Your choice was ${mainMenu[7]}`);
+                    newDepartmentPrompt();
                     break;
                 case mainMenu[8]:
                     console.log(`Your choice was ${mainMenu[8]}`);
@@ -100,6 +103,19 @@ const displayDepartments = async () => {
     startMenu();
     return json;
 
+}
+
+//GET DEPARTMENT LIST ARRAY
+const getDepartmentList = async () => {
+    const departmentData = await fetch(baseUrl + '/api/departments-list', {
+        method: 'GET',
+    });
+    console.log("1 " + JSON.stringify(departmentData));
+    const json = await departmentData.json();
+    console.log("2 " + JSON.stringify(json));
+    const departmentList = await json.data;
+    console.log("3 " + JSON.stringify(departmentList));
+    return departmentList;
 }
 
 const displayRoles = async () => {
@@ -122,13 +138,61 @@ const displayEmployees = async () => {
     return json;
 }
 
-const addDepartment = async (newDepartment) => {
+function newDepartmentPrompt (){
+    inquirer
+        .prompt ([
+            {
+                type:'input',
+                name:'newDepartment',
+                message: departmentQuestion,
+            }
+        ])
+        .then (answer => {
+            const newDepartment = JSON.stringify(answer)
+            console.log("New Department saved as " + newDepartment)
+            addDepartment(answer)
+            
+        })
+}
+const addDepartment = async (answer) => {
+    console.log("From addDepartment Function " + JSON.stringify(answer));
+    const newDepartment = JSON.stringify(answer);
     const result = await fetch(baseUrl + '/api/new-department', {
         method: 'POST',
-        body: JSON.stringify(newDepartment)
+        headers: {
+            'Content-type':'application/json'
+        },
+        body: newDepartment
     });
     const json = await result.json();
     console.log('Department added to the database', json)
+    startMenu();
     return json;
+}
+
+async function newRolePrompt(){
+    const departmentList = await getDepartmentList();
+    inquirer
+        .prompt ([
+            {
+                type:'input',
+                name:'title',
+                message: roleQuestions[0],
+            },
+            {
+                type:'input',
+                name:'salary',
+                message: roleQuestions[1],
+            },
+            {
+                type:'list',
+                name:'department',
+                message: roleQuestions[2],
+                choices: departmentList,
+            }
+        ])
+        .then ((answer) => {
+            console.log(answer)
+        })
 }
 module.exports = { startMenu };

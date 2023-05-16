@@ -39,6 +39,20 @@ app.get('/api/departments', (req, res) => {
     });
 });
 
+//GET list of departments to use in inquirer
+app.get('/api/departments-list', (req, res) => {
+  const sql = 'SELECT id AS value, name FROM departments';
+  db.query(sql, (err, list) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      data: list
+    });
+  });
+});
+
 //get all roles and show department name
 app.get('/api/roles', (req, res) => {
     const sql = `SELECT roles.id, roles.title, roles.salary, departments.name AS department_name 
@@ -81,10 +95,11 @@ INNER JOIN departments ON roles.department_id = departments.id`;
 });
 
 // add a new department 
-app.post('/api/new-department', ( { body }, res) => {
-  const sql = `INSERT INTO departments(name)
+app.post('/api/new-department', (req, res) => {
+  const sql = `INSERT INTO departments (name)
   VALUES (?)`;
-  const params = body.newDepartment;
+  const { newDepartment } = req.body;
+  const params = newDepartment;
 
   db.query(sql, params, (err, result) => {
     if (err) {
@@ -93,7 +108,26 @@ app.post('/api/new-department', ( { body }, res) => {
     }
     res.json({
       message: 'success',
-      data: body
+      data: req.body
+    });
+  });
+});
+
+// add a new role
+app.post('/api/new-role', (req, res) => {
+  const sql = `INSERT INTO roles(title, salary, department_id)
+  VALUES (?, ?, ?)`;
+  const { title, salary, department_id } = req.body;
+  const params = [title, salary, department_id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: req.body
     });
   });
 });
