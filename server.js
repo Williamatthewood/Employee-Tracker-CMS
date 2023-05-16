@@ -53,6 +53,34 @@ app.get('/api/departments-list', (req, res) => {
   });
 });
 
+//GET list of roles to use in inquirer
+app.get('/api/roles-list', (req, res) => {
+  const sql = 'SELECT id AS value, title AS name FROM roles';
+  db.query(sql, (err, list) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      data: list
+    });
+  });
+});
+
+//GET list of employees to use in inquirer
+app.get('/api/employees-list', (req, res) => {
+  const sql = 'SELECT id AS value, first_name AS name FROM employees';
+  db.query(sql, (err, list) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      data: list
+    });
+  });
+});
+
 //get all roles and show department name
 app.get('/api/roles', (req, res) => {
     const sql = `SELECT roles.id, roles.title, roles.salary, departments.name AS department_name 
@@ -119,6 +147,25 @@ app.post('/api/new-role', (req, res) => {
   VALUES (?, ?, ?)`;
   const { title, salary, department_id } = req.body;
   const params = [title, salary, department_id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: req.body
+    });
+  });
+});
+
+// add a new employee
+app.post('/api/new-employee', (req, res) => {
+  const sql = `INSERT INTO employees(first_name, last_name, role_id, manager_id)
+  VALUES (?, ?, ?, ?)`;
+  const { first_name, last_name, role_id, manager_id } = req.body;
+  const params = [first_name, last_name, role_id, manager_id];
 
   db.query(sql, params, (err, result) => {
     if (err) {

@@ -127,7 +127,17 @@ const displayRoles = async () => {
     return json;
 }
 
-//GET ALL ROLES
+//GET ROLE LIST ARRAY
+const getRoleList = async () => {
+    const roleData = await fetch(baseUrl + '/api/roles-list', {
+        method: 'GET',
+    });
+    const json = await roleData.json();
+    const roleList = await json.data;
+    return roleList;
+}
+
+//GET ALL EMPLOYEES
 const displayEmployees = async () => {
     const result = await fetch(baseUrl +'/api/employees', {
         method: 'GET',
@@ -138,23 +148,16 @@ const displayEmployees = async () => {
     return json;
 }
 
-//NEW DEPARTMENT QUESTIONS
-function newDepartmentPrompt (){
-    inquirer
-        .prompt ([
-            {
-                type:'input',
-                name:'newDepartment',
-                message: departmentQuestion,
-            }
-        ])
-        .then (answer => {
-            const newDepartment = JSON.stringify(answer)
-            console.log("New Department saved as " + newDepartment)
-            addDepartment(answer)
-            
-        })
+//GET EMPLOYEE LIST ARRAY
+const getEmployeeList = async () => {
+    const employeeData = await fetch(baseUrl + '/api/employees-list', {
+        method: 'GET',
+    });
+    const json = await employeeData.json();
+    const employeeList = await json.data;
+    return employeeList;
 }
+
 //ADD THE NEW DEPARTMENT
 const addDepartment = async (answer) => {
     const newDepartment = JSON.stringify(answer);
@@ -186,7 +189,41 @@ async function addRole (answers) {
     startMenu();
     return json;
 }
-//prompt 
+
+//ADD A NEW EMPLOYEE
+async function addEmployee(answers) {
+    const newEmployee = JSON.stringify(answers);
+    const result = await fetch(baseUrl + '/api/new-employee', {
+        method: 'POST',
+        headers: {
+            'Content-type':'application/json'
+        },
+        body: newEmployee
+    });
+    const json = await result.json();
+    console.log('Role added to the database', json);
+    startMenu();
+    return json;
+}
+//NEW DEPARTMENT QUESTIONS
+function newDepartmentPrompt (){
+    inquirer
+        .prompt ([
+            {
+                type:'input',
+                name:'newDepartment',
+                message: departmentQuestion,
+            }
+        ])
+        .then (answer => {
+            const newDepartment = JSON.stringify(answer)
+            console.log("New Department saved as " + newDepartment)
+            addDepartment(answer)
+            
+        })
+}
+
+//NEW ROLE QUESTIONS
 async function newRolePrompt(){
     const departmentList = await getDepartmentList();
     inquirer
@@ -210,6 +247,41 @@ async function newRolePrompt(){
         ])
         .then ((answers) => {
             addRole(answers);
+        })
+}
+
+//NEW EMPLOYEE QUESTIONS
+async function newEmployeePrompt (){
+    const roleList = await getRoleList();
+    const employeeList = await getEmployeeList();
+    inquirer
+        .prompt([
+            {
+                type:'input',
+                name:'first_name',
+                message: employeeQuestions[0],
+            },
+            {
+                type:'input',
+                name:'last_name',
+                message: employeeQuestions[1],
+            },
+            {
+                type:'list',
+                name:'role_id',
+                message: employeeQuestions[2],
+                choices: roleList,
+            },
+            {
+                type:'list',
+                name:'manager_id',
+                message: employeeQuestions[3],
+                choices: employeeList,
+            },
+        ])
+        .then ((answers) => {
+            console.log(answers);
+            addEmployee(answers);
         })
 }
 

@@ -28,7 +28,7 @@ VALUES (?, ?, ?)
 -- THEN TAKE THAT EMPLOYEES ID TO STORE IT AS MANAGER ID
 -- SAME THING WITH ROLE TITLE/ ROLE ID
 INSERT INTO employees(first_name, last_name, role_id, manager_id)
-VALUES ('?', '?', ?, ?)
+VALUES (?, ?, ?, ?)
 
 -- updating an existing employee's role -USER SHOULD SELECT FROM A LIST OF EMPLOYEES - TAKE THAT
 -- ID NUMBER TO USE IN THE WHERE CLAUSE 
